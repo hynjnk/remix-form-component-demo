@@ -1,4 +1,5 @@
 import {
+  Link,
   Links,
   Meta,
   Outlet,
@@ -24,7 +25,7 @@ export const links: LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-gray-100">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -32,6 +33,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        <header className="bg-gray-500 text-white text-center py-4">
+          <Link to="/" prefetch="viewport">
+          <h1 className="text-xl font-semibold">Remix Form Demo</h1>
+          </Link>
+          <h2 className="font-medium">app/root.tsx</h2>
+        </header>
         {children}
         <ScrollRestoration />
         <Scripts />
