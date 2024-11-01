@@ -6,7 +6,7 @@ import {
 } from "~/components/DailyForecastCard";
 import { Await, defer, MetaFunction, useLoaderData } from "@remix-run/react";
 
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { parseWithZod } from "@conform-to/zod";
 import {
   CITY_NOT_FOUND_ERROR,
@@ -50,11 +50,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         })
     : Promise.resolve([]);
 
-  return defer({
-    city,
-    weatherForecasts,
-  });
+  return defer(
+    {
+      city,
+      weatherForecasts,
+    },
+    {
+      headers: {
+        "Cache-Control": "max-age=60, public",
+      },
+    }
+  );
 };
+
+export const headers: HeadersFunction = ({
+  loaderHeaders,
+}) => ({
+  "Cache-Control": loaderHeaders.get("Cache-Control") ?? "",
+});
 
 export const meta: MetaFunction<typeof loader> = ({ data: city }) => {
   return [
@@ -70,7 +83,9 @@ export default function WeatherPage() {
   return (
     <main className="bg-white rounded-lg grow p-6 m-6">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-lg font-semibold mb-4">app/routes/weather._index.tsx</h2>
+        <h2 className="text-lg font-semibold mb-4">
+          app/routes/weather._index.tsx
+        </h2>
         <div className="grid grid-cols-2 gap-4">
           <VanillaForm city={city} />
           <RemixForm city={city} />
